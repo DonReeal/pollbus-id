@@ -5,6 +5,12 @@ import static org.junit.Assert.assertThat;
 
 public class PollbusIdAssert {
 
+    // TODO: Add real mask values.
+	private static final int maskSequenceBits = 1;      // 00...001
+    private static final int maskWorkerBits = 2;        // 00...010
+    private static final int maskDatacenterbits = 4;    // 00...100
+
+
 	static void assertSequenceBitsAre(long pollid, String expected) {
 		assertThat(binarySubstringOf(pollid, 0, 12), is(expected));
 	}
