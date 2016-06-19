@@ -1,4 +1,4 @@
-package pollbus.idgen;
+package pollbus.idgen.barflake;
 
 public interface CurrentTimeMillisProvider {
 	

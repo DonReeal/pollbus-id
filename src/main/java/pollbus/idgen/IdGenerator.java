@@ -2,8 +2,13 @@ package pollbus.idgen;
 
 import io.baratine.core.Result;
 
+
+
+/**
+ * Generates unique Ids
+ */
 public interface IdGenerator {
 
-	void nextId(Result<Long> result);
+	void next(Result<Long> result);
 
 }
