@@ -25,75 +25,80 @@ import pollbus.idgen.IdGenerator;
 import pollbus.idgen.IdGeneratorSync;
 
 @RunWith(RunnerBaratine.class)
-@ConfigurationBaratine(services = { BarflakeGeneratorService.class }, pod = "a")
+@ConfigurationBaratine(services={BarflakeGeneratorService.class})
 public class PollIdDefaultServiceTest {
 
 
-	@Inject @Lookup("pod://a/barflakes")
+	@Inject @Lookup("/barflakes")
 	private IdGeneratorSync idGen;
 
 	@Test
 	public void syncEndpointAvailable() {
-		assertThat(idGen.next(), notNullValue());
+	  
+	    long value = idGen.next();		
+	    assertThat(value, notNullValue());
+	    
+        System.out.println("received a barflake: " + stringifyId(value));        
 	}	
 	
-	/* 
-	 * Some prototype how to test async endpoints.
-	 * TODO: Should assert more meaningful result like [yiels/s]
-	 */
-	
-	@Inject @Lookup("pod://a/barflakes")
-	private IdGenerator idGenAsync;
-	private ExecutorService taskRunner = Executors.newSingleThreadExecutor();	
+
+	@Inject @Lookup("/barflakes")
+	private IdGenerator idGenAsync;	
 
 	@Test 
-	public void asyncYieldsTenThousandIdsIn500ms() throws InterruptedException {
+	public void asyncYieldsFifeThousandIdsPerSecond() throws InterruptedException {
 	  
-	    int rounds = 10_000;
-     
-	    CountDownLatch resultsCountDown = new CountDownLatch(rounds);
-	    
-	    Runnable queryAllRounds = new Runnable() {
+        int secondsToRun = 15;
+        int ypsMinExpected = 100_000;    
+        
+        int maxAPICalls = 15_000_000; // that meant 100_000 ps
+	    CountDownLatch resultsCountDown = new CountDownLatch(maxAPICalls);
+	    ExecutorService taskRunner = Executors.newSingleThreadExecutor();
+	    Runnable queryAPI = new Runnable() {
           @Override
           public void run() {
-            for(int i = 0; i < rounds; i++) {          
+            for(int i = 0; i < maxAPICalls; i++) {          
               idGenAsync.next(new Result<Long>() {
                 @Override
-                public void complete(Long result) {              
-                    resultsCountDown.countDown();               
-                    if(resultsCountDown.getCount() == 0) {                  
-                      long unixMillis = BarflakeDecoder.decodeTimestamp(result, 1456530296738L);
-                      long unixSeconds = unixMillis / 1000;
-                      int nanos = (int) (unixMillis % 1000) * 1000000;                  
-                      System.out.println(
-                          "final values was:  " + result
-                          + " { value: " + result
-                          + ", timestamp: " + LocalDateTime.ofEpochSecond(unixSeconds, nanos, ZoneOffset.UTC)
-                          + ", sequence: " + BarflakeDecoder.decodeSequence(result)
-                          + ", datacenter: " + BarflakeDecoder.decodeDataCenter(result)
-                          + ", worker: " + BarflakeDecoder.decodeWorker(result)
-                          + " }");               
-                    }
+                public void complete(Long result) {                  
+                  resultsCountDown.countDown();
                 }
               });
             }            
           }
-        };	    
+        };
         
         // ======================================================================================
-        long start = System.currentTimeMillis();    
-        taskRunner.submit(queryAllRounds); 
-        resultsCountDown.await(500, TimeUnit.MILLISECONDS);
+        taskRunner.submit(queryAPI); 
+        resultsCountDown.await(secondsToRun, TimeUnit.SECONDS);
+        long countDown = resultsCountDown.getCount();
+        long resultsYielded = maxAPICalls - countDown;
         // ======================================================================================
+        taskRunner.shutdownNow();
         
-        if(resultsCountDown.getCount() > 0) {
-          fail("Not done in time -- " + resultsCountDown.getCount()+ " missing of " + rounds);
-        } 
+        double ypsActual = resultsYielded / secondsToRun;
+        System.out.println("Yielded Results per second: " + ypsActual);
         
-        else {
-          System.out.println(String.format("Receiving %s results took %s", 
-              rounds, (System.currentTimeMillis() - start)));          
-        }   
+        assertTrue(
+            "Not enough results yielded! Expected " + ypsMinExpected + " results per second. Was acutally: " + ypsActual,
+            (ypsActual > ypsMinExpected));
+         
     }
+	
+	
+	private String stringifyId(Long value) {
+      
+      long unixMillis = BarflakeDecoder.decodeTimestamp(value, 1456530296738L);
+      long unixSeconds = unixMillis / 1000;
+      int nanos = (int) (unixMillis % 1000) * 1000000;
+      
+      return " { "
+          + "value: " + value
+        + ", timestamp: " + LocalDateTime.ofEpochSecond(unixSeconds, nanos, ZoneOffset.UTC)
+        + ", sequence: " + BarflakeDecoder.decodeSequence(value)
+        + ", datacenter: " + BarflakeDecoder.decodeDataCenter(value)
+        + ", worker: " + BarflakeDecoder.decodeWorker(value)
+        + " }";
+  }
 	
 }
