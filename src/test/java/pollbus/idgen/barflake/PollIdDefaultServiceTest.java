@@ -12,24 +12,27 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.baratine.core.Lookup;
-import io.baratine.core.Result;
+import io.baratine.service.Result;
+import io.baratine.service.Service;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.caucho.junit.ConfigurationBaratine;
 import com.caucho.junit.RunnerBaratine;
+import com.caucho.junit.ServiceTest;
 
 import pollbus.idgen.IdGenerator;
 import pollbus.idgen.IdGeneratorSync;
 
 @RunWith(RunnerBaratine.class)
-@ConfigurationBaratine(services={BarflakeGeneratorService.class})
+@ConfigurationBaratine(workDir="tmp/testserver")
+@ServiceTest(BarflakeGeneratorService.class)
 public class PollIdDefaultServiceTest {
 
 
-	@Inject @Lookup("/barflakes")
+	@Inject @Service("/barflakes")
 	private IdGeneratorSync idGen;
 
 	@Test
@@ -42,16 +45,16 @@ public class PollIdDefaultServiceTest {
 	}	
 	
 
-	@Inject @Lookup("/barflakes")
-	private IdGenerator idGenAsync;	
+	@Inject @Service("/barflakes")
+	private IdGenerator idGenAsync;
 
 	@Test 
 	public void asyncYieldsFifeThousandIdsPerSecond() throws InterruptedException {
 	  
         int secondsToRun = 15;
         int ypsMinExpected = 100_000;    
+        int maxAPICalls = 15_000_000;
         
-        int maxAPICalls = 15_000_000; // that meant 100_000 ps
 	    CountDownLatch resultsCountDown = new CountDownLatch(maxAPICalls);
 	    ExecutorService taskRunner = Executors.newSingleThreadExecutor();
 	    Runnable queryAPI = new Runnable() {
@@ -60,9 +63,15 @@ public class PollIdDefaultServiceTest {
             for(int i = 0; i < maxAPICalls; i++) {          
               idGenAsync.next(new Result<Long>() {
                 @Override
-                public void complete(Long result) {                  
-                  resultsCountDown.countDown();
+                public void handle(Long result, Throwable t) {
+                    if(t == null) {
+                      resultsCountDown.countDown();
+                    }                    
+                    else {
+                      Assert.fail("Error yielding result! + " + t);
+                    }
                 }
+
               });
             }            
           }

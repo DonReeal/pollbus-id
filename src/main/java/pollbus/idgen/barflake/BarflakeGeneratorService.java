@@ -1,8 +1,8 @@
 package pollbus.idgen.barflake;
 
-import io.baratine.core.OnInit;
-import io.baratine.core.Result;
-import io.baratine.core.Service;
+import io.baratine.service.OnInit;
+import io.baratine.service.Result;
+import io.baratine.service.Service;
 
 import pollbus.idgen.IdGenerator;
 
@@ -14,12 +14,12 @@ public class BarflakeGeneratorService implements IdGenerator {
 	@OnInit
 	public void init(Result<Boolean> result) {
 		generator = new BarflakeGenerator(1, 1);
-		result.complete(true);
+		result.ok(true);
 	}
 	
 	@Override
 	public void next(Result<Long> result) {
-		result.complete(generator.next());
+		result.ok(generator.next());
 	}
 
 }

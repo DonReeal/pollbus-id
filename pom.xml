@@ -10,7 +10,7 @@
 
 	<properties>
 		<encoding>UTF-8</encoding>
-		<baratine.version>0.10.2</baratine.version>
+		<baratine.version>0.11-SNAPSHOT-2016-06-18</baratine.version>
 		<jodatime.version>2.9.2</jodatime.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
@@ -74,12 +74,12 @@
 				</configuration>
 			</plugin>
 
-			<plugin>
+			<!-- <plugin>
                 <groupId>io.baratine</groupId>
                 <artifactId>baratine-maven-plugin</artifactId> 
 				<version>0.10.3</version> 
                 <extensions>true</extensions> 
-            </plugin>    
+            </plugin>     -->
 		</plugins>
 
 	</build>

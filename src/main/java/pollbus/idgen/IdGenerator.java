@@ -1,6 +1,6 @@
 package pollbus.idgen;
 
-import io.baratine.core.Result;
+import io.baratine.service.Result;
 
 
 
