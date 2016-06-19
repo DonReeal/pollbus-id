@@ -43,7 +43,7 @@
 				</property>
 			</activation>
 			<build>
-				<directory>target-eclipse</directory>
+				<directory>target-ide</directory>
 			</build>
 		</profile>
 	</profiles>
