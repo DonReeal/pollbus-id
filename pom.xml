@@ -14,15 +14,27 @@
 		<jodatime.version>2.9.2</jodatime.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+	
+	<repositories>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+	</repositories>
 
 	<dependencies>
 
-		<!-- COMPILE -->
 		<dependency>
-			<groupId>io.baratine</groupId>
-			<artifactId>baratine</artifactId>
-			<version>${baratine.version}</version>
+			
+			<groupId>com.github.baratine</groupId>
+			<artifactId>baratine</artifactId>   
+			<version>5a9b28a</version>
 			<scope>compile</scope>
+
+			<!-- <groupId>io.baratine</groupId> -->
+			<!-- <artifactId>baratine</artifactId> -->
+			<!-- <version>${baratine.version}</version> -->
+			<!-- <scope>compile</scope> -->
 		</dependency>
 
 		<dependency>
@@ -74,13 +86,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- <plugin>
-                <groupId>io.baratine</groupId>
-                <artifactId>baratine-maven-plugin</artifactId> 
-				<version>0.10.3</version> 
-                <extensions>true</extensions> 
-            </plugin>     -->
-		</plugins>
+                </plugins>
 
 	</build>
 
