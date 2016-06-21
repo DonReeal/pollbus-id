@@ -6,7 +6,7 @@ import io.baratine.service.Service;
 
 import pollbus.idgen.IdGenerator;
 
-@Service("public:///barflakes")
+@Service("/barflakes")
 public class BarflakeGeneratorService implements IdGenerator {
 	
 	private BarflakeGenerator generator;

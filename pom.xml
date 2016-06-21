@@ -1,8 +1,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	
+
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>eu.dons.pollbus</groupId>
 	<artifactId>pollbus-id</artifactId>
 	<version>BETA</version>
@@ -14,27 +14,33 @@
 		<jodatime.version>2.9.2</jodatime.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-	
+
 	<repositories>
 		<repository>
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
+		</repository>
+
+		<repository>
+			<id>bar-snapshots</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
 		</repository>
 	</repositories>
 
 	<dependencies>
 
 		<dependency>
-			
-			<groupId>com.github.baratine</groupId>
-			<artifactId>baratine</artifactId>   
-			<version>5a9b28a</version>
-			<scope>compile</scope>
+			<groupId>io.baratine</groupId>
+			<artifactId>api</artifactId>
+			<version>0.11-SNAPSHOT</version>
+			<scope>test</scope>
+		</dependency>
 
-			<!-- <groupId>io.baratine</groupId> -->
-			<!-- <artifactId>baratine</artifactId> -->
-			<!-- <version>${baratine.version}</version> -->
-			<!-- <scope>compile</scope> -->
+		<dependency>
+			<groupId>io.baratine</groupId>
+			<artifactId>baratine</artifactId>
+			<version>0.11-SNAPSHOT</version>
+			<scope>test</scope>
 		</dependency>
 
 		<dependency>
@@ -73,7 +79,7 @@
 			</plugin>
 
 
-			<plugin>
+			<!-- <plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -84,9 +90,9 @@
 						</property>
 					</systemProperties>
 				</configuration>
-			</plugin>
+			</plugin> -->
 
-                </plugins>
+		</plugins>
 
 	</build>
 
