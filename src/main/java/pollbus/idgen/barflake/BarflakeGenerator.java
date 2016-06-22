@@ -47,11 +47,11 @@ public class BarflakeGenerator implements IdGeneratorSync {
 	
 	@Override
 	public long next() throws InvalidSystemClock {	
-		updateState();
-		return encodeState();
+		update();
+		return encodeId();
 	}
 
-	private void updateState() throws InvalidSystemClock {      
+	private void update() throws InvalidSystemClock {      
 		
 	    long currentTime = this.timer.currentAppTime();	
 	    
@@ -73,7 +73,7 @@ public class BarflakeGenerator implements IdGeneratorSync {
 		
 	}
 	
-    private long encodeState() {
+    private long encodeId() {
         
         long value = ((this.timestamp) << LSHIFT_TIMESTAMP) | 
            (this.datacenterId << LSHIFT_DATACENTER) | 
