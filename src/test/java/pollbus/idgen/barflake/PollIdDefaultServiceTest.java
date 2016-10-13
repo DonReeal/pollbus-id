@@ -33,26 +33,23 @@ public class PollIdDefaultServiceTest {
 
 
 	@Inject @Service("/barflakes")
-	private IdGeneratorSync idGen;
+	private IdGeneratorSync idGenSync;
 
 	@Test
 	public void syncEndpointAvailable() {
-	  
-		long value = idGen.next();		
+		long value = idGenSync.next();		
 		assertThat(value, notNullValue());
-		
 		System.out.println("received a barflake: " + stringifyId(value));        
-	}	
+	}
 	
-
 	@Inject @Service("/barflakes")
 	private IdGenerator idGenAsync;
 
 	@Test 
-	public void asyncYieldsFifeThousandIdsPerSecond() throws InterruptedException {
+	public void asyncYields1MioIdsPerSecond() throws InterruptedException {
 	
 		int secondsToRun = 5;
-		int ypsMinExpected = 100_000;    
+		int ypsMinExpected = 1_000_000;    
 		int maxAPICalls = 15_000_000;
 
 		CountDownLatch resultsCountDown = new CountDownLatch(maxAPICalls);

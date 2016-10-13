@@ -2,8 +2,6 @@ package pollbus.idgen;
 
 import io.baratine.service.Result;
 
-
-
 /**
  * Generates unique Ids
  */

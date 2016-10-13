@@ -3,6 +3,8 @@ package pollbus.idgen.barflake;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import javax.swing.plaf.basic.BasicInternalFrameUI.InternalFramePropertyChangeListener;
+
 import org.junit.Test;
 
 public class PollbusIdGeneratorTest {
@@ -88,19 +90,43 @@ public class PollbusIdGeneratorTest {
 		assertThat(BarflakeDecoder.decodeDataCenter(id_datacenter2), is(2));
 	}
 	
+	@Test(expected=InvalidSystemClock.class)
+	public void invalidSystemClockWhenTimeReversed() {
+		
+		idGenerator = new BarflakeGenerator(new BackwardsRunningMillisProvider(Long.MAX_VALUE), 0, 0);
+		Long next = idGenerator.next(); // first call okay implementation knows time used now
+		assertThat(next, notNullValue());
+		
+		idGenerator.next(); // therefore fails on second call
+	}
+	
+	private static final class BackwardsRunningMillisProvider implements CurrentTimeMillisProvider {
+		private long mockTime;
+		
+		public BackwardsRunningMillisProvider(long startingTime) {
+			this.mockTime = startingTime;
+		}
+		
+		@Override
+		public long currentAppTime() {
+			return mockTime--;
+		}
+		
+	}
+	
 	
 	
 	private static final class TimeFreezingMillisProvider implements CurrentTimeMillisProvider {
 		
 	    public TimeFreezingMillisProvider(long initialValue) {
-			CURRENT_TIME__MILLIS_FROZEN = initialValue;
+			frozenTimeMillis = initialValue;
 		}		
 		
-	    private final long CURRENT_TIME__MILLIS_FROZEN;
+	    private final long frozenTimeMillis;
 		
 	    @Override
 		public long currentAppTime() {
-			return CURRENT_TIME__MILLIS_FROZEN;
+			return frozenTimeMillis;
 		}
 	};
 

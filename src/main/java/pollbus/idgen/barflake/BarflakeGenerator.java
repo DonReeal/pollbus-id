@@ -5,7 +5,7 @@ import pollbus.idgen.IdGeneratorSync;
 
 public class BarflakeGenerator implements IdGeneratorSync {
     
-  
+	
 	private static final int SEQUENCE_BITS = 12;
 	private static final int SEQ_MAX = 4095;
 	
@@ -18,7 +18,7 @@ public class BarflakeGenerator implements IdGeneratorSync {
     static final int LSHIFT_DATACENTER = SEQUENCE_BITS + WORKER_BITS;
     static final int LSHIFT_TIMESTAMP = SEQUENCE_BITS + WORKER_BITS + DATACENTER_BITS;
 
-	
+    
 	// runtime config
 	private final CurrentTimeMillisProvider timer;
     private final int datacenterId;
@@ -83,7 +83,6 @@ public class BarflakeGenerator implements IdGeneratorSync {
         return value;       
     }
 	
-    
 	@Override
 	public String toString() {
 		return this.getClass().getSimpleName() + " [datacenterId=" + datacenterId + ", workerId=" + workerId + "]";

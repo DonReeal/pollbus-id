@@ -3,7 +3,6 @@ package pollbus.idgen.barflake;
 import io.baratine.service.OnInit;
 import io.baratine.service.Result;
 import io.baratine.service.Service;
-
 import pollbus.idgen.IdGenerator;
 
 @Service("/barflakes")
