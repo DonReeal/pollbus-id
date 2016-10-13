@@ -1,7 +1,8 @@
 package pollbus.idgen.barflake;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -12,9 +13,6 @@ import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
-import io.baratine.service.Result;
-import io.baratine.service.Service;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,15 +21,17 @@ import com.caucho.junit.ConfigurationBaratine;
 import com.caucho.junit.RunnerBaratine;
 import com.caucho.junit.ServiceTest;
 
-import pollbus.idgen.IdGenerator;
+import io.baratine.service.Result;
+import io.baratine.service.Service;
+import pollbus.idgen.IdGeneratorAsync;
 import pollbus.idgen.IdGeneratorSync;
 
 @RunWith(RunnerBaratine.class)
 @ConfigurationBaratine(workDir="tmp/testserver")
 @ServiceTest(BarflakeGeneratorService.class)
-public class PollIdDefaultServiceTest {
+public class BarflakeGeneratorAsBaratineServiceIntegrationTest {
 
-
+	
 	@Inject @Service("/barflakes")
 	private IdGeneratorSync idGenSync;
 
@@ -41,11 +41,12 @@ public class PollIdDefaultServiceTest {
 		assertThat(value, notNullValue());
 		System.out.println("received a barflake: " + stringifyId(value));        
 	}
+
 	
 	@Inject @Service("/barflakes")
-	private IdGenerator idGenAsync;
+	private IdGeneratorAsync idGenAsync;
 
-	@Test 
+	@Test // from within JVM
 	public void asyncYields1MioIdsPerSecond() throws InterruptedException {
 	
 		int secondsToRun = 5;

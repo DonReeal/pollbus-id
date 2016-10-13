@@ -3,10 +3,10 @@ package pollbus.idgen.barflake;
 import io.baratine.service.OnInit;
 import io.baratine.service.Result;
 import io.baratine.service.Service;
-import pollbus.idgen.IdGenerator;
+import pollbus.idgen.IdGeneratorAsync;
 
 @Service("/barflakes")
-public class BarflakeGeneratorService implements IdGenerator {
+public class BarflakeGeneratorService implements IdGeneratorAsync {
 	
 	private BarflakeGenerator generator;
 	

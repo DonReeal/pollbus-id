@@ -1,9 +1,8 @@
 package pollbus.idgen.barflake;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
-
-import javax.swing.plaf.basic.BasicInternalFrameUI.InternalFramePropertyChangeListener;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 
@@ -90,15 +89,21 @@ public class PollbusIdGeneratorTest {
 		assertThat(BarflakeDecoder.decodeDataCenter(id_datacenter2), is(2));
 	}
 	
+	
 	@Test(expected=InvalidSystemClock.class)
 	public void invalidSystemClockWhenTimeReversed() {
 		
+		// to retain uniqueness of ids:
+		// once an id has been created
+		// when clock went backwards since last id creation calling next fails
+		
 		idGenerator = new BarflakeGenerator(new BackwardsRunningMillisProvider(Long.MAX_VALUE), 0, 0);
-		Long next = idGenerator.next(); // first call okay implementation knows time used now
+		Long next = idGenerator.next(); 
 		assertThat(next, notNullValue());
 		
-		idGenerator.next(); // therefore fails on second call
+		idGenerator.next();
 	}
+
 	
 	private static final class BackwardsRunningMillisProvider implements CurrentTimeMillisProvider {
 		private long mockTime;
@@ -111,9 +116,7 @@ public class PollbusIdGeneratorTest {
 		public long currentAppTime() {
 			return mockTime--;
 		}
-		
 	}
-	
 	
 	
 	private static final class TimeFreezingMillisProvider implements CurrentTimeMillisProvider {
@@ -128,6 +131,6 @@ public class PollbusIdGeneratorTest {
 		public long currentAppTime() {
 			return frozenTimeMillis;
 		}
-	};
+	}
 
 }

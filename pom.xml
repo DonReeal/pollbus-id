@@ -11,21 +11,8 @@
 	<properties>
 		<encoding>UTF-8</encoding>
 		<baratine.version>1.0.0</baratine.version>
-		<jodatime.version>2.9.2</jodatime.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
-
-	<repositories>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-
-		<repository>
-			<id>bar-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-		</repository>
-	</repositories>
 
 	<dependencies>
 

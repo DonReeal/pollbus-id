@@ -5,7 +5,7 @@ import io.baratine.service.Result;
 /**
  * Generates unique Ids
  */
-public interface IdGenerator {
+public interface IdGeneratorAsync {
 
 	void next(Result<Long> result);
 
